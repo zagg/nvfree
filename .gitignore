@@ -1,0 +1,9 @@
+/target/
+/build/
+/vendor/
+*.o
+*.a
+*.so
+nvfree
+probe
+.nv/

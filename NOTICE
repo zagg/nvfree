@@ -1,0 +1,28 @@
+nvfree
+Copyright (c) 2026 zagg — MIT licensed (see LICENSE).
+
+WHAT THIS IS
+  A command-line VRAM bar graph. The GPU-facing part is not written here: it is
+  provided by nvidia-smi-clone-RE (https://github.com/zagg/nvidia-smi-clone-RE),
+  a free and independent reimplementation of the NVIDIA management interface,
+  recovered by observing the driver's own behaviour on the author's hardware.
+  nvfree statically links that library's nvrm.c and fields.c.
+
+WHAT IS NOT HERE
+  No NVIDIA source code, binary, firmware, dump or trademarked asset is included
+  or redistributed. Interface facts come from headers NVIDIA ships under MIT with
+  its open kernel module and from observed program behaviour.
+
+READ-ONLY GUARANTEE
+  nvfree issues only GET/QUERY controls, plus the version handshake and
+  ATTACH_IDS required to open a driver client. It never writes to the device:
+  no power limit, no persistence change, no reset, no ECC configuration.
+
+TRADEMARKS
+  "NVIDIA", "nvidia-smi", "NVML" and "CUDA" are trademarks of NVIDIA
+  Corporation. This project is not affiliated with, sponsored or endorsed by
+  NVIDIA Corporation.
+
+CONTRIBUTING
+  Keep the no-crates rule and the read-only property. Numbers must keep matching
+  the reference tool: run `make check` on a box that has it.

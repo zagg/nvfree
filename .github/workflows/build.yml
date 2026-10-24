@@ -1,0 +1,44 @@
+name: build
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: toolchain
+        run: |
+          rustc --version
+          cargo --version
+          gcc --version
+
+      - name: fetch the driver-ABI library
+        run: make vendor
+
+      - name: build
+        run: make release
+
+      - name: package
+        run: |
+          set -e
+          v=${GITHUB_REF_NAME#v}
+          [ "$GITHUB_REF_NAME" = "$GITHUB_REF" ] && v=dev
+          name=nvfree-$v-x86_64-linux-gnu
+          mkdir -p "$name"
+          cp target/release/nvfree "$name/"
+          cp README.md LICENSE NOTICE "$name/" 2>/dev/null || true
+          tar czf "$name.tar.gz" "$name"
+          echo "ASSET=$name.tar.gz" >> "$GITHUB_ENV"
+
+      - name: attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "$ASSET" --title "nvfree $GITHUB_REF_NAME" --notes-file .github/release-notes.md --verify-tag || gh release upload "$GITHUB_REF_NAME" "$ASSET" --clobber

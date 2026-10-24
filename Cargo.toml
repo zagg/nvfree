@@ -1,0 +1,23 @@
+[package]
+name         = "nvfree"
+version      = "0.1.0"
+edition      = "2021"
+rust-version = "1.70"
+description  = "VRAM consommee/disponible en bare-graph CLI, lue directement dans le pilote NVIDIA (ni NVML, ni nvidia-smi)"
+license      = "MIT"
+build        = "build.rs"
+
+# Aucune dependance externe : le binaire ne lie que libc/libdl et l'archive
+# statique produite par build.rs a partir de la lib C.
+[dependencies]
+
+[[bin]]
+name = "nvfree"
+path = "src/main.rs"
+
+[profile.release]
+opt-level     = 2
+lto           = true
+codegen-units = 1
+panic         = "abort"
+strip         = true
